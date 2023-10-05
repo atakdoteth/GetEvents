@@ -10,7 +10,7 @@ const contractAddress = "0xb0640E8B5F24beDC63c33d371923D68fDe020303";
 
 let temporaryTimestamp;
 
-let tokensToCheck = [3981,4110,4083,5867,8067,2033,1083,4725,7967,4814,3970,6516,3695,8213,8248,1083,4083,278,3981,4083,4110,4110,2004,3836,3955,8792,647,5689,1440,8780,1881,7641,3327,445,1078,1102,4705,6950,672,1941,8550,3410,4051,8481,3181,6950,5244,1406,4116,1240,5434,4640,6265,5739,5497,7754,8403,4785,5243,7339,7289,2363,1654,2771,4369,571,6950,7270,2916,8260,5963,3970,4814,7147,5363,1912,2493,4640,6643,6684,3714,4102,4763,1882,2939,1874,8182,7548,3892,6460,153,307,6620,6578,5847,5828,6438,166,3602,8855,5618,4186,5634,6913,3250,3642,6528,7013,5460,1550,6068,1434,6919,6551,194,1188,6855,4532,5868,4116,2753,847,7976,5293,4389,4389,3557,3753,5323,1148,1148,6855];
+let tokensToCheck = [3981,4110,4083,5867,8067,2033,1083,4725,7967,4814,3970,6516,3695,8213,8248,1083,4083,278,3981,4083,4110,4110,2004,3836,3955,8792,647,5689,1440,8780,1881,7641,3327,445,1078,1102,4705,6950,672,1941,8550,3410,4051,8481,3181,6950,5244,1406,4116,1240,5434,4640,6265,5739,5497,7754,8403,4785,5243,7339,7289,2363,1654,2771,4369,571,6950,7270,2916,8260,5963,3970,4814,7147,5363,1912,2493,4640,6643,6684,3714,4102,4763,1882,2939,1874,8182,7548,3892,6460,153,307,6620,6578,5847,5828,6438,166,3602,8855,5618,4186,5634,6913,3250,3642,6528,7013,5460,1550,6068,1434,6919,6551,194,1188,6855,4532,5868,4116,2753,847,7976,5293,4389,4389,3557,3753,5323,1148,1148,6855,2673,6015,845,85,88,90,110,442,444,689,743,798,801,1022,1316,1371,1407,1417,1462,1590,1690,1898,1948,1998,2016,2261,2524,2680,2758,2786,3131,3141,3280,3302,3344,3480,3707,3917,4179,4387,4388,4534,4993,5079,5499,5573,5787,6675,6756,7039,7666,8130,8506,8643,6535,6536,213,5029,7143,317];
 
 let uniqueTokensToCheck = [...new Set(tokensToCheck)];
 console.log('Unique Tokens to Check:', uniqueTokensToCheck.length)
@@ -19,7 +19,6 @@ console.log('Unique Tokens to Check:', uniqueTokensToCheck.length)
 let tokenIDs = [];
 let walletAddresses = [];
 let timestamps = [];
-
 let failedTokens = [];
 
 let counter = 0;
@@ -86,6 +85,7 @@ async function checkOwnerAndTimestamp(startingBlock,endBlock,tokenID) {
 }
 
 async function main(){
+    let groupCount = 1;
 
     for(let i = 0; i < uniqueTokensToCheck.length; i++){
         try {
@@ -95,13 +95,24 @@ async function main(){
             console.log('----------------')
             failedTokens.push(uniqueTokensToCheck[i]);            
         }
+
+        if(walletAddresses.length >= 100 || uniqueTokensToCheck.length - i -1 == 0 ){
+
+            writeFile("tokenIDs_" + groupCount + ".txt",tokenIDs.toString());
+            writeFile("walletAddresses_" + groupCount + ".txt",walletAddresses.toString());
+            writeFile("timestamps_" + groupCount + ".txt",timestamps.toString());
+            writeFile("failedTokens_" + groupCount + ".txt",failedTokens.toString());
+            tokenIDs = [];
+            failedTokens = [];
+            walletAddresses = [];
+            timestamps = [];
+            groupCount ++;
+
+        }
         
     }
 
-    writeFile("tokenIDs.txt",tokenIDs.toString());
-    writeFile("walletAddresses.txt",walletAddresses.toString());
-    writeFile("timestamps.txt",timestamps.toString());
-    writeFile("failedTokens.txt",failedTokens.toString());
+    
 
 }
 

@@ -25,12 +25,13 @@ async function getTransactionLogs(blockNumber, txHash) {
 async function getTokensDataFromLogs(logs) {
     const tokensData = [];
     logs.forEach((log, idx) => {
+        //log topics[0] is the event signature
+        //log topics[3] => event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
         const tokenID = parseInt(log.topics[3])
         tokensData.push(tokenID);
     });
+    //removes duplicates
     let uniqueTokenIDs = [...new Set(tokensData)];
-    console.log('Unique tokenID count:', uniqueTokenIDs.length)
-
     return uniqueTokenIDs;
 }
 
